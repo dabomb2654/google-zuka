@@ -1,0 +1,4 @@
+runtime: python37
+entrypoint: gunicorn -b :$PORT main:server
+resources:
+    memory_gb: 2.0
