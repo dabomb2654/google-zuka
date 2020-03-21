@@ -151,14 +151,44 @@ line_data = [{
       'showlegend': True,
     },
     ]
-
+data = pd.read_csv("https://raw.githubusercontent.com/dabomb2654/google-zuka/master/tsr_final.csv")
+print(len(data))
+line_info = []
+for x in range(len(data)):
+	name = str(data['name_eng'][x]) + ", " + str(data['name_jpn'][x])
+	start_split = data['start_date'][x].split("/")
+	start_year = float(start_split[2])
+	if start_year < 50.0:
+		start_year = start_year + 2000.0
+	else:
+		start_year = start_year + 1900.0
+	start_year = start_year - 1976.0
+	start_num_months = (start_year * 12.0) + float(start_split[0]) + (float(start_split[1]) / 31)
+	end_split = data['end_date'][x].split("/")
+	end_year = float(end_split[2])
+	if end_year < 50.0:
+		end_year = end_year + 2000.0
+	else:
+		end_year = end_year + 1900.0
+	end_year = end_year - 1976.0
+	end_num_months = (end_year * 12.0) + float(end_split[0]) + (float(end_split[1]) / 31)
+	default_dict = {'x': [start_num_months, end_num_months],'y':[x,x],'type':'scatter','mode':'lines+markers','name':name,}
+	line_info.append(default_dict)
 ''' start of dash plotly layout '''
 app.layout = html.Div(children=[  
 #html.H1("zuka charts", id="title", className="title"),
 #html.H4("a site to make charts of data compiled from the takawiki", id="site-description",className="site-description"),
-html.Button('make a chart', id='button_makeChart'),
-html.Button('make a schedule', id='button_makeSchedule'),
-html.H5("troupe", id="text_textboxes_troupe"),
+#html.Button('make a chart', id='button_makeChart'),
+#html.Button('make a schedule', id='button_makeSchedule'),
+#html.H5("troupe", id="text_textboxes_troupe"),
+    dcc.Graph(
+    	id='bar-chart',
+  		animate=True,
+    	figure={
+    		'data': line_info,
+    	}
+    	),
+'''
 dcc.Graph(
     id='numshowspie',
     figure={
@@ -338,7 +368,7 @@ html.Div(id="container_line_graph", children=[dcc.Graph(
     'data': line_data,
     }
     )]),
-
+'''
 
 ])
 @app.callback(
